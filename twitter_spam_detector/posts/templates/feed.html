@@ -6,19 +6,22 @@
 <!-- Post creation form -->
 <form method="post" action="{% url 'create_post' %}">
     {% csrf_token %}
-    <textarea name="content" placeholder="What's happening?"></textarea>
+    <textarea name="content" placeholder="What's happening?" required></textarea>
     <button type="submit">Post</button>
 </form>
 
 <!-- Posts list -->
 {% for post in posts %}
-<div class="post {% if post.is_spam %}spam{% endif %}">
-    <p>{{ post.author.username }}</p>
-    <p>{{ post.content }}</p>
-    <small>{{ post.created_at }}</small>
-    
+<div class="post {% if post.is_spam %}spam{% endif %}"
+    style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+    <strong>{{ post.author.username }}</strong>
+    <br>
+    {{ post.content }}
+    <br>
+    <em>{{ post.created_at }}</em>
+
     {% if post.is_spam %}
-    <div class="spam-warning">
+    <div class="spam-warning" style="color: red; margin-top: 10px;">
         ⚠️ This post was flagged as spam. Reasons:
         <ul>
             {% for reason in post.spam_reasons %}
@@ -27,13 +30,19 @@
         </ul>
     </div>
     {% endif %}
-    
-    <a href="{% url 'report_post' post.id %}">Report</a>
-    <a href="{% url 'block_user' post.author.id %}">Block User</a>
-    
-    {% if post.author == request.user %}
-    <a href="{% url 'delete_post' post.id %}">Delete</a>
-    {% endif %}
+
+    <!-- <div style="margin-top: 10px;">
+        <a href="{% url 'report_post' post.id %}">Report</a> |
+        <a href="{% url 'block_user' post.author.id %}">Block User</a>
+        {% if post.author == request.user %}
+        | <a href="{% url 'delete_post' post.id %}">Delete</a>
+        {% endif %}
+    </div> -->
+
+    <!-- Indented Comments Section -->
+    <div class="comments-section" style="margin-left: 30px; margin-top: 15px;">
+        {% include "list.html" with post=post %}
+    </div>
 </div>
 {% endfor %}
 {% endblock %}

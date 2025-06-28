@@ -7,7 +7,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('post/', post_views.feed, name='feed'),
     path('post/create/', post_views.create_post, name='create_post'),
-    path('post/report/<int:post_id>/', post_views.report_post, name='report_post'),
     path('post/delete/<int:post_id>/', post_views.delete_post, name='delete_post'),
+    path('post/report/<int:post_id>/', post_views.report_post, name='report_post'),
     path('user/block/<int:user_id>/', user_views.block_user, name='block_user'),
 ]

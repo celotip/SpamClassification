@@ -1,27 +1,35 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Post, Comment
-from spam_detection.service import SpamDetector
+from .models import Post
+from spam_detection.service import Spam;
 
-
-spam_detector = SpamDetector()
+spam = Spam.worker()
 
 def feed(request):
-    return render(request, "feed.html")
+    posts = Post.objects.all().order_by('-created_at')  # Fetch all posts from the database
+    return render(request, 'feed.html', {'posts': posts})  # Pass posts to the template
 
+
+# Create post & comment section
 @login_required
 def create_post(request):
     if request.method == 'POST':
         content = request.POST.get('content')
-        is_spam, reasons = spam_detector.predict(content)
-        post = Post.objects.create(
-            author=request.user,
-            content=content,
-            is_spam=is_spam,
-            spam_reasons=reasons
-        )
-        return redirect('feed')
+        is_spam, reasons = spam.predict(content)
+        try:
+            is_spam, reasons = spam.predict(content)
+            post = Post.objects.create(
+                author=request.user,
+                content=content,
+                is_spam=is_spam,
+                spam_reasons=reasons
+            )
+            print("Post created:", post.id)  # Debug
+            return redirect('feed')
+        except Exception as e:
+            print("Error:", str(e))  # Debug
     return render(request, 'create_post.html')
+
 
 @login_required
 def report_post(request, post_id):

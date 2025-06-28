@@ -1,3 +1,4 @@
+import joblib
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
@@ -37,3 +38,11 @@ class SpamDetector:
                 reasons.append("ML model detected spam patterns")
             return is_spam, reasons
         return True, reasons
+    
+class Spam:
+    @staticmethod
+    def worker():
+        detector = SpamDetector()
+        detector.model = joblib.load('/Users/ghifariakbar/Web/SpamClassification/twitter_spam_detector/spam_detection/spam_model.pkl')
+        detector.vectorizer = joblib.load('/Users/ghifariakbar/Web/SpamClassification/twitter_spam_detector/spam_detection/spam_vectorizer.pkl')
+        return detector

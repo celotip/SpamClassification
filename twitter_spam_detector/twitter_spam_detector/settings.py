@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'posts',
     'users',
-    # 'spam_detection',  # Assuming this is the app for spam detection logic
+    'comments',
+    # 'spam_detection',  todo
 ]
 
 MIDDLEWARE = [

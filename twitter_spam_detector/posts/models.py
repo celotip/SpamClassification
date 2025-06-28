@@ -7,11 +7,3 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_spam = models.BooleanField(default=False)
     spam_reasons = models.JSONField(default=list, blank=True)
-
-class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_spam = models.BooleanField(default=False)
-    spam_reasons = models.JSONField(default=list, blank=True)
