@@ -40,7 +40,4 @@ def report_spam(request, comment_id):
         comment.spam_reasons.append(f"Reported by {comment.reported_by.count()} users")
         comment.save()
     
-    # Optional: Add to your spam detection training data
-    # spam.train_negative([comment.content])  # If you implement this method
-    
     return redirect('feed')  # Or your preferred redirect

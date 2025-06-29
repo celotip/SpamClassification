@@ -1,13 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+import pandas as pd
+from sklearn.model_selection import train_test_split
 from .models import Post
 from spam_detection.service import Spam;
 
 spam = Spam.worker()
 
 def feed(request):
-    posts = Post.objects.all().order_by('-created_at')  # Fetch all posts from the database
-    return render(request, 'feed.html', {'posts': posts})  # Pass posts to the template
+    posts = Post.objects.all().order_by('-created_at')
+    accuracy = Spam.evaluate() 
+    return render(request, 'feed.html', {'posts': posts, 'accuracy' : accuracy})  # Pass posts to the template
 
 
 # Create post & comment section

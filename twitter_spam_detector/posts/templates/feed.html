@@ -1,19 +1,28 @@
 {% extends 'base.html' %}
 
+{% block sidebar %}
+<div class="card shadow-sm mb-4">
+    <div class="card-body text-center">
+        <h6 class="card-title text-muted">Spam Classifier Accuracy</h6>
+        <h2 class="text-success">{{ accuracy|floatformat:2 }}%</h2>
+    </div>
+</div>
+{% endblock %}
+
 {% block content %}
 <h1>Feed</h1>
 
-<!-- Post creation form -->
-<form method="post" action="{% url 'create_post' %}">
+<form method="post" action="{% url 'create_post' %}" class="mb-4">
     {% csrf_token %}
-    <textarea name="content" placeholder="What's happening?" required></textarea>
-    <button type="submit">Post</button>
+    <div class="mb-2">
+        <textarea name="content" class="form-control rounded shadow-sm" rows="3" placeholder="What's happening?"
+            required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary px-4">Post</button>
 </form>
 
-<!-- Posts list -->
 {% for post in posts %}
-<div class="post {% if post.is_spam %}spam{% endif %}"
-    style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+<div class="post-card {% if post.is_spam %}spam-border{% endif %}">
     <strong>{{ post.author.username }}</strong>
     <br>
     {{ post.content }}
@@ -21,9 +30,9 @@
     <em>{{ post.created_at }}</em>
 
     {% if post.is_spam %}
-    <div class="spam-warning" style="color: red; margin-top: 10px;">
-        ⚠️ This post was flagged as spam. Reasons:
-        <ul>
+    <div class="alert alert-danger mt-3">
+        <strong>⚠️ Spam Detected:</strong>
+        <ul class="mb-0">
             {% for reason in post.spam_reasons %}
             <li>{{ reason }}</li>
             {% endfor %}
@@ -31,18 +40,11 @@
     </div>
     {% endif %}
 
-    <!-- <div style="margin-top: 10px;">
-        <a href="{% url 'report_post' post.id %}">Report</a> |
-        <a href="{% url 'block_user' post.author.id %}">Block User</a>
-        {% if post.author == request.user %}
-        | <a href="{% url 'delete_post' post.id %}">Delete</a>
-        {% endif %}
-    </div> -->
-
-    <!-- Indented Comments Section -->
     <div class="comments-section" style="margin-left: 30px; margin-top: 15px;">
         {% include "list.html" with post=post %}
     </div>
 </div>
 {% endfor %}
 {% endblock %}
+
+
