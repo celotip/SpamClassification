@@ -1,6 +1,6 @@
 <div class="comments">
     {% for comment in post.comments.all %}
-    <div class="comment">
+    <div class="comment {% if comment.is_spam %}spam-comment{% endif %}">
         <strong>{{ comment.author.username }}</strong>
         &middot; <small>{{ comment.created_at }}</small><br>
         {{ comment.content }}
@@ -14,6 +14,23 @@
                 {% endfor %}
             </ul>
         </div>
+        {% endif %}
+
+        {% if not comment.is_spam and user.is_authenticated and user != comment.author %}
+            {% if user in comment.reported_by.all %}
+                <small class="text-muted">(You reported this as spam)</small>
+            {% elif user != comment.author %}
+                <a href="{% url 'report_comment' comment.id %}" 
+                class="btn btn-sm btn-outline-danger">
+                    Report Spam
+                </a>
+            {% endif %}
+        {% endif %}
+
+        {% if comment.reported_by.count > 0 %}
+            <small class="text-muted">
+                {{ comment.reported_by.count }} report(s)
+            </small>
         {% endif %}
     </div>
     {% empty %}

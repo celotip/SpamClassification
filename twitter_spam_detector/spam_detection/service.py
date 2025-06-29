@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from langdetect import detect
+import os
 
 class SpamDetector:
     def __init__(self):
@@ -43,6 +44,7 @@ class Spam:
     @staticmethod
     def worker():
         detector = SpamDetector()
-        detector.model = joblib.load('/Users/ghifariakbar/Web/SpamClassification/twitter_spam_detector/spam_detection/spam_model.pkl')
-        detector.vectorizer = joblib.load('/Users/ghifariakbar/Web/SpamClassification/twitter_spam_detector/spam_detection/spam_vectorizer.pkl')
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        detector.model = joblib.load(os.path.join(base_dir, 'spam_model.pkl'))
+        detector.vectorizer = joblib.load(os.path.join(base_dir, 'spam_vectorizer.pkl'))
         return detector

@@ -128,4 +128,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'feed'  # Where to redirect after login
 LOGIN_URL = 'login'           # Where to redirect if login is required
-LOGOUT_REDIRECT_URL = 'login' # Where to redirect after logout
+LOGOUT_REDIRECT_URL = 'feed' # Where to redirect after logout

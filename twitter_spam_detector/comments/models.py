@@ -11,6 +11,8 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_spam = models.BooleanField(default=False)
     spam_reasons = models.JSONField(default=list)
+    reported_by = models.ManyToManyField(User, related_name='reported_comments', blank=True)
+
 
     def __str__(self):
         return f"Comment by {self.author.username}"

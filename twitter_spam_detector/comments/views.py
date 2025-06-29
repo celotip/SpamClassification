@@ -26,3 +26,21 @@ def create_comment(request, post_id):
         except Exception as e:
             print("Error:", str(e))  # Debug
     return redirect('feed')
+
+@login_required
+def report_spam(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    
+    # Add reporting user to reported_by
+    comment.reported_by.add(request.user)
+    
+    # Optional: Auto-mark as spam if enough reports
+    if comment.reported_by.count() >= 3:  # Threshold configurable
+        comment.is_spam = True
+        comment.spam_reasons.append(f"Reported by {comment.reported_by.count()} users")
+        comment.save()
+    
+    # Optional: Add to your spam detection training data
+    # spam.train_negative([comment.content])  # If you implement this method
+    
+    return redirect('feed')  # Or your preferred redirect
