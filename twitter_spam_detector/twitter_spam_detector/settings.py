@@ -41,7 +41,24 @@ INSTALLED_APPS = [
     'posts',
     'users',
     'comments',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',  
     # 'spam_detection',  todo
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:3000",
 ]
 
 MIDDLEWARE = [
@@ -52,6 +69,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # <-- Add this early
+    'django.middleware.common.CommonMiddleware',  # <-- Keep this
 ]
 
 ROOT_URLCONF = 'twitter_spam_detector.urls'

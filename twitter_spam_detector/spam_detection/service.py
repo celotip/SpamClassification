@@ -51,10 +51,6 @@ class SpamDetector:
         # Step 3: ML-Based Prediction
         return self._ml_prediction_details(text)
     
-
-    
-
-    
 class Spam:
     @staticmethod
     def worker():
@@ -88,6 +84,56 @@ class Spam:
 
         accuracy = (correct / total) * 100
         return accuracy
+    
+    @staticmethod
+    def retrain_with_reported_data(reported_texts):
+        """
+        reported_texts: list of tuples like [(text1, 1), (text2, 1), ...]
+        where `1` is the label for spam
+        """
+        import os
+        path = "/Users/ghifariakbar/Web/SpamClassification/spam.csv"
+
+        # Step 1: Load existing dataset without renaming columns
+        df = pd.read_csv(path, encoding='ISO-8859-1')[['v1', 'v2']]
+
+        # Step 2: Map v1 to binary labels for training
+        df_mapped = df.copy()
+        df_mapped['label'] = df_mapped['v1'].map({'ham': 0, 'spam': 1})
+        df_mapped['text'] = df_mapped['v2']
+
+        # Step 3: Prepare new reported data
+        new_df = pd.DataFrame(reported_texts, columns=['text', 'label'])
+
+        # Step 4: Combine for training
+        training_df = pd.concat([df_mapped[['text', 'label']], new_df], ignore_index=True)
+
+        # Step 5: Overwrite CSV with original structure (v1, v2)
+        combined_csv_df = pd.concat([
+            df,
+            pd.DataFrame({
+                'v1': ['spam' if lbl == 1 else 'ham' for _, lbl in reported_texts],
+                'v2': [txt for txt, _ in reported_texts]
+            })
+        ], ignore_index=True)
+        combined_csv_df.to_csv(path, index=False, encoding='ISO-8859-1')
+
+        # Step 6: Retrain model
+        vectorizer = TfidfVectorizer(stop_words='english')
+        X = vectorizer.fit_transform(training_df['text'])
+        y = training_df['label']
+
+        model = LogisticRegression()
+        model.fit(X, y)
+
+        # Step 7: Save model + vectorizer
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        joblib.dump(model, os.path.join(base_dir, 'spam_model.pkl'))
+        joblib.dump(vectorizer, os.path.join(base_dir, 'spam_vectorizer.pkl'))
+
+        print("✔️ Model retrained and CSV updated with new reported data.")
+
+
     
 
     

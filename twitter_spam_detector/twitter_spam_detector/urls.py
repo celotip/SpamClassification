@@ -16,16 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from django.contrib.auth import views as auth_views
+from django.urls import path
+from rest_framework.authtoken.views import obtain_auth_token
 from users import views as user_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("posts.urls")),
-    path('comments/', include('comments.urls')),
-    
-    path('register/', user_views.register, name='register'),
-    path('login/', user_views.login_view, name='login'),
-    path('logout/', user_views.logout_view, name='logout'),
-    path('profile/', user_views.profile, name='profile'),
+    path("", include("spam_detection.urls")),
+    path("", include('comments.urls')),
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
 ]
