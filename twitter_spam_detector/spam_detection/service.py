@@ -64,7 +64,9 @@ class Spam:
     def evaluate():
         detector = Spam.worker()
         # Load test data
-        df = pd.read_csv("/Users/ghifariakbar/Web/SpamClassification/spam.csv", encoding='ISO-8859-1')[['v1', 'v2']]
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(base_dir, 'spam.csv')
+        df = pd.read_csv(path, encoding='ISO-8859-1')[['v1', 'v2']]
         df = df.rename(columns={'v1': 'label', 'v2': 'text'})
         df['label'] = df['label'].map({'ham': 0, 'spam': 1})
 
@@ -92,7 +94,8 @@ class Spam:
         where `1` is the label for spam
         """
         import os
-        path = "/Users/ghifariakbar/Web/SpamClassification/spam.csv"
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(base_dir, 'spam.csv')
 
         # Step 1: Load existing dataset without renaming columns
         df = pd.read_csv(path, encoding='ISO-8859-1')[['v1', 'v2']]
